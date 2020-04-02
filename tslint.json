@@ -1,0 +1,72 @@
+{
+  "extends": [
+    "tslint:latest",
+    "tslint-react"
+  ],
+  "jsRules": {
+    "object-literal-sort-keys": false,
+    "quotemark": [
+      true,
+      "single",
+      "jsx-double"
+    ]
+  },
+  "linterOptions": {
+    "exclude": [
+      "package.json",
+      "build/**/*",
+      "node_modules/**/*"
+    ]
+  },
+  "rules": {
+    "arrow-return-shorthand": [
+      true,
+      "multiline"
+    ],
+    "eofline": true,
+    "no-submodule-imports": [
+      true,
+      "@progress"
+    ],
+    "no-shadowed-variable": false,
+    "no-implicit-dependencies": [
+      [
+        true,
+        "dev"
+      ]
+    ],
+    "object-literal-sort-keys": false,
+    "no-var-requires": false,
+    "no-trailing-whitespace": true,
+    "ordered-imports": false,
+    "arrow-parens": false,
+    "interface-name": [
+      true,
+      "never-prefix"
+    ],
+    "max-line-length": [
+      true,
+      {
+        "limit": 120,
+        "ignore-pattern": "^import "
+      }
+    ],
+    "member-access": [
+      true,
+      "no-public"
+    ],
+    "prefer-const": true,
+    "trailing-comma": [
+      true,
+      {
+        "esSpecCompliant": true
+      }
+    ],
+    "quotemark": [
+      true,
+      "single",
+      "jsx-double"
+    ]
+  },
+  "rulesDirectory": []
+}

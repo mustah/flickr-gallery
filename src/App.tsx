@@ -1,26 +1,48 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import {Button} from './components/Button';
+import {Column, Row} from './components/Layout';
+import {Loader} from './components/Loader';
+import {PhotoCard} from './components/PhotoCard';
+import {ResultSummary} from './components/ResultSummary';
+import {SearchBox} from './components/SearchBox';
+import {useFetchPhotos} from './fetchPhotosHook';
+import {requestLoadMore} from './photosActions';
+import {initialState, photosReducer} from './photosReducer';
 
-function App() {
+export const App = () => {
+  const [text, setSearchText] = React.useState<string>('');
+  const [state, dispatch] = React.useReducer(photosReducer, initialState);
+
+  const {isFetching, isLoadMore, items, page, total, errorMessage} = state;
+
+  useFetchPhotos({dispatch, isLoadMore, page, text});
+
+  const handleLoadMore = () => dispatch(requestLoadMore());
+
+  const hasItems = items.length > 0;
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <SearchBox onSearch={setSearchText} disabled={isFetching}/>
+
+      <Loader isFetching={isFetching}>
+        <Column>
+          <ResultSummary total={total}/>
+
+          <Row>
+            {items.map((photo, index) => <PhotoCard {...photo} key={`${photo.id}-${index}`}/>)}
+          </Row>
+
+          <Loader isFetching={isLoadMore}>
+            {hasItems && <Button text="Load more" onClick={handleLoadMore} style={{margin: '24px', width: 210}}/>}
+          </Loader>
+
+          <Row style={{color: '#ff5544'}}>{errorMessage && errorMessage}</Row>
+
+        </Column>
+      </Loader>
+
     </div>
   );
-}
-
-export default App;
+};
