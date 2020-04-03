@@ -1,6 +1,6 @@
+import {mockResponse} from '../mockdata/photosResponseTestData';
 import {failurePhotos, requestLoadMore, requestPhotos, resetSearch, successPhotos} from '../photosActions';
 import {initialState, photosReducer, State} from '../photosReducer';
-import {mockResponse} from '../mockdata/photosResponseTestData';
 
 describe('photos reducer ', () => {
 
@@ -17,6 +17,12 @@ describe('photos reducer ', () => {
 
     it('resets total', () => {
       const state: State = {...initialState, total: 100};
+      expect(photosReducer(state, resetSearch())).toBe(initialState);
+    });
+
+    it('can not load more photos when search is reset', () => {
+      const state: State = {...initialState, canLoadMore: true, total: 100};
+
       expect(photosReducer(state, resetSearch())).toBe(initialState);
     });
   });
@@ -53,20 +59,36 @@ describe('photos reducer ', () => {
 
       expect(photosReducer(state, requestLoadMore())).toEqual(expected);
     });
+
+    it('has nothing more to load when last page is reached', () => {
+      const {photos: {total, photo, pages}} = mockResponse;
+
+      const expected: State = {
+        ...initialState,
+        total,
+        page: pages,
+        items: [...photo, ...photo],
+        canLoadMore: false,
+      };
+
+      const state = photosReducer({...initialState, page: pages - 1}, successPhotos(mockResponse));
+
+      expect(photosReducer(state, successPhotos(mockResponse))).toEqual(expected);
+    });
   });
 
   describe('success photos response', () => {
 
     it('has single result', () => {
       const {photos: {total, photo}} = mockResponse;
-      const expected: State = {...initialState, total, page: 2, items: [...photo]};
+      const expected: State = {...initialState, canLoadMore: true, total, page: 2, items: [...photo]};
 
       expect(photosReducer(initialState, successPhotos(mockResponse))).toEqual(expected);
     });
 
     it('fetches next page', () => {
       const {photos: {total, photo}} = mockResponse;
-      const expected: State = {...initialState, total, page: 3, items: [...photo, ...photo]};
+      const expected: State = {...initialState, canLoadMore: true, total, page: 3, items: [...photo, ...photo]};
 
       const nextState = photosReducer(initialState, successPhotos(mockResponse));
 

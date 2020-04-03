@@ -5,6 +5,7 @@ import {Photo} from './services/flickrService';
 export interface State {
   isFetching: boolean;
   isLoadMore: boolean;
+  canLoadMore: boolean;
   items: Photo[];
   page: number;
   total: number;
@@ -16,6 +17,7 @@ export const initialState: State = {
   items: [],
   isFetching: false,
   isLoadMore: false,
+  canLoadMore: false,
   page: 1,
   total: 0,
   text: '',
@@ -30,13 +32,16 @@ export const photosReducer = (state: State, action: ActionType<typeof actions>):
         text: action.payload
       };
     case getType(actions.successPhotos):
-      const {photos: {photo, total}} = action.payload;
+      const {photos: {photo, total, pages}} = action.payload;
+      const nextPage = state.page + 1;
+      const canLoadMore = nextPage <= pages;
       return {
         ...state,
+        canLoadMore,
         isFetching: false,
         isLoadMore: false,
         items: [...state.items, ...photo],
-        page: state.page + 1,
+        page: canLoadMore ? nextPage : state.page,
         total,
       };
     case getType(actions.requestLoadMore):

@@ -14,13 +14,11 @@ export const App = () => {
   const [text, setSearchText] = React.useState<string>('');
   const [state, dispatch] = React.useReducer(photosReducer, initialState);
 
-  const {isFetching, isLoadMore, items, page, total, errorMessage} = state;
+  const {canLoadMore, isFetching, isLoadMore, items, page, total, errorMessage} = state;
 
   useFetchPhotos({dispatch, isLoadMore, page, text});
 
   const handleLoadMore = () => dispatch(requestLoadMore());
-
-  const hasItems = items.length > 0;
 
   return (
     <div className="App">
@@ -35,7 +33,7 @@ export const App = () => {
           </Row>
 
           <Loader isFetching={isLoadMore}>
-            {hasItems && <Button text="Load more" onClick={handleLoadMore} style={{margin: '24px', width: 210}}/>}
+            {canLoadMore && <Button text="Load more" onClick={handleLoadMore} style={{margin: '24px', width: 210}}/>}
           </Loader>
 
           <Row style={{color: '#ff5544'}}>{errorMessage && errorMessage}</Row>
