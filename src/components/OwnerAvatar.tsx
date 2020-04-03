@@ -18,6 +18,7 @@ const style: CSSProperties = {
 
 export const OwnerAvatar = ({farm, server, owner}: Buddy) => (
   <img
+    title={owner}
     src={`https://farm${farm}.staticflickr.com/${server}/buddyicons/${owner}.jpg`}
     alt="Owner"
     style={style}
