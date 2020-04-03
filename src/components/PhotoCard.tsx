@@ -10,7 +10,7 @@ export const PhotoCard = ({farm, server, owner, id, secret, title}: Photo) => {
       <img
         src={`https://farm${farm}.staticflickr.com/${server}/${id}_${secret}.jpg`}
         alt={title}
-        style={{height: 250, width: 350, objectFit: 'cover'}}
+        style={{height: 250, width: 350, objectFit: 'cover', overflow: 'hidden', fontSize: 18}}
         title={title}
       />
     </Row>
